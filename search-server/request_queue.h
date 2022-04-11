@@ -14,14 +14,8 @@ public:
  
     // сделаем "обертки" для всех методов поиска, чтобы сохранять результаты для нашей статистики
     template <typename DocumentPredicate>
-    vector<Document> AddFindRequest(const string& raw_query, DocumentPredicate document_predicate) {
-        const auto result = search_server_.FindTopDocuments(raw_query, document_predicate);
-        AddRequest(result.size());
-        return result;
-    }
- 
+    vector<Document> AddFindRequest(const string& raw_query, DocumentPredicate document_predicate);
     vector<Document> AddFindRequest(const string& raw_query, DocumentStatus status);
- 
     vector<Document> AddFindRequest(const string& raw_query);
  
     int GetNoResultRequests() const;
@@ -39,3 +33,10 @@ private:
  
     void AddRequest(int results_num) ;
 };
+
+template <typename DocumentPredicate>
+    vector<Document> RequestQueue::AddFindRequest(const string& raw_query, DocumentPredicate document_predicate) {
+        const auto result = search_server_.FindTopDocuments(raw_query, document_predicate);
+        AddRequest(result.size());
+        return result;
+    }
