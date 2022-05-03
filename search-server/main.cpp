@@ -70,7 +70,7 @@ void MatchDocuments(SearchServer& search_server, const std::string& query) {
 }
 
 int main() {
-    setlocale(LC_ALL, "Russian");
+    
     SearchServer search_server("and in at with"s);
 
     AddDocument(search_server, 1, "funny pet and nasty rat"s, DocumentStatus::ACTUAL, {7, 2, 7});
