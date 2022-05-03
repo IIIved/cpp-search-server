@@ -1,42 +1,38 @@
 #include "request_queue.h"
 
-using namespace std;
-
- RequestQueue::RequestQueue(const SearchServer& search_server)
-        : search_server_(search_server)
-        , no_results_requests_(0)
-        , current_time_(0) {
+    std::vector<Document> RequestQueue::AddFindRequest(const string& raw_query, DocumentStatus status) {
+        std::vector<Document> documents = search_server_.FindTopDocuments(raw_query, status);
+        Add_Degue(documents);
+        Delete_Deque();
+        return documents;
     }
 
-vector<Document> RequestQueue::AddFindRequest(const string& raw_query, DocumentStatus status) {
-        const auto result = search_server_.FindTopDocuments(raw_query, status);
-        AddRequest(result.size());
-        return result;
+    std::vector<Document> RequestQueue::AddFindRequest(const std::string& raw_query) {
+        std::vector<Document> documents = search_server_.FindTopDocuments(raw_query);
+        Add_Degue(documents);
+        Delete_Deque();
+        return documents;
     }
 
-vector<Document> RequestQueue::AddFindRequest(const string& raw_query) {
-        const auto result = search_server_.FindTopDocuments(raw_query);
-        AddRequest(result.size());
-        return result;
+    int RequestQueue::GetNoResultRequests() const {
+        return empty_reqest_count;
+
     }
 
-int RequestQueue::GetNoResultRequests() const {
-        return no_results_requests_;
+
+    void RequestQueue::Add_Degue(std::vector<Document> documents){
+        count_++;
+        if (documents.empty())
+            empty_reqest_count++;
+        requests_.push_back({count_, !documents.empty()});
     }
 
-void RequestQueue::AddRequest(int results_num) {
-        // новый запрос - новая секунда
-        ++current_time_;
-        // удаляем все результаты поиска, которые устарели
-        while (!requests_.empty() && min_in_day_ <= current_time_ - requests_.front().timestamp) {
-            if (0 == requests_.front().results) {
-                --no_results_requests_;
-            }
+    void RequestQueue::Delete_Deque(){
+        QueryResult x;
+        if (requests_.size() > min_in_day_){
+            x = requests_.front();
+            if (x.result == 0)
+                empty_reqest_count--;
             requests_.pop_front();
-        }
-        // сохраняем новый результат поиска
-        requests_.push_back({current_time_, results_num});
-        if (0 == results_num) {
-            ++no_results_requests_;
         }
     }
