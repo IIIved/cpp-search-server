@@ -2,8 +2,12 @@
 
 using namespace std;
 
+// class SearchServer public:
+
 SearchServer::SearchServer(const std::string& stop_words_text)
     : SearchServer(SplitIntoWords(stop_words_text))
+    // Invoke delegating constructor
+    // from string container
 {}
 
 void SearchServer::AddDocument(int document_id,
@@ -64,10 +68,10 @@ std::set<int>::const_iterator SearchServer::end() const {
 const std::map<std::string, double>&
 SearchServer::GetWordFrequencies(int document_id) const {
     static std::map<std::string, double> result;
-    for (const auto& [key, value] : word_to_document_freqs_) {
-        auto it = value.find(document_id);
-        if (it != value.end()) {
-            result[key] = it -> second;
+    for (const auto& [word_document_, word_to_ids_] : word_to_document_freqs_) {
+        auto it = word_to_ids_.find(document_id);
+        if (it != word_to_ids_.end()) {
+            result[word_document_] = it -> second;
         }
     }
     return result;
@@ -138,13 +142,14 @@ SearchServer::MatchDocument(const std::string& raw_query,
     return { matched_words, documents_.at(document_id).status };
 }
 
-
+// class SearchServer private:
 
 bool SearchServer::IsStopWord(const std::string& word) const {
     return stop_words_.count(word) > 0;
 }
 
 bool SearchServer::IsValidWord(const std::string& word) {
+    // A valid word must not contain special characters
     return std::none_of(word.begin(), word.end(),
         [](char c) {
             return c >= '\0' && c < ' '; });
@@ -209,6 +214,7 @@ SearchServer::Query SearchServer::ParseQuery(
     return result;
 }
 
+// Existence required
 double SearchServer::ComputeWordInverseDocumentFreq(
     const std::string& word) const {
     return log(GetDocumentCount() * 1.0 /

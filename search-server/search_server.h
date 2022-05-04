@@ -8,7 +8,6 @@
 #include <set>
 #include <string>
 #include <stdexcept> 
-
 #include "document.h"
 #include "string_processing.h"
 
@@ -75,6 +74,10 @@ private:
     const std::set<std::string> stop_words_;
     std::map<std::string, std::map<int, double>>
          word_to_document_freqs_;
+    std:: map<std::string, double>
+         word_document_;
+    std::map<std::string, std::map<int, double>>
+         word_to_ids_;
     std::map<int, DocumentData> documents_;
     std::set<int> document_ids_;
 
@@ -92,6 +95,7 @@ private:
 
     Query ParseQuery(const std::string& text) const;
 
+    // Existence required
     double ComputeWordInverseDocumentFreq(
         const std::string& word) const;
 
@@ -101,11 +105,12 @@ private:
         DocumentPredicate document_predicate) const;
 };
 
-
+// class SearchServer public:
 
 template <typename StringContainer>
 SearchServer::SearchServer(const StringContainer& stop_words)
     : stop_words_(MakeUniqueNonEmptyStrings(stop_words))
+    // Extract non-empty stop words
 {
     using namespace std::string_literals;
 
@@ -143,6 +148,8 @@ std::vector<Document> SearchServer::FindTopDocuments(
 
     return matched_documents;
 }
+
+// class SearchServer private:
 
 template <typename DocumentPredicate>
 std::vector<Document> SearchServer::FindAllDocuments(

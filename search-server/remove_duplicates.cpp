@@ -1,28 +1,37 @@
 #include "remove_duplicates.h"
 
+#include <iostream>
+
 using namespace std;
 
-void RemoveDuplicates(SearchServer& search_server) {
+void RemoveDuplicates(SearchServer& search_server)
+{
+    std::map<std::set<std::string>, int> word_to_document_freqs;
+    std::set<int> documents_to_delete;
 
-    std::vector<int> vec_duplicate_ids;
-    auto it_end = search_server.end();
-    for (auto it1 = search_server.begin(); it1 != it_end; ++it1) {
-        auto it2_begin = it1;
-        ++it2_begin;
-        if (it2_begin != it_end) {
-            for (auto it2 = it2_begin; it2 != it_end; ++it2) {
-                if (search_server.CompareDocumentsWords(*it1, *it2)) {
-                    vec_duplicate_ids.push_back(*it2);
-                    break;
-                }
-            }
+    for (auto document_id : search_server)
+    {
+        std::set<std::string> words;
+
+        for (auto& [document, freqs] : search_server.GetWordFrequencies(document_id))
+        {
+            words.insert(document);
         }
+        if (word_to_document_freqs.find(words) == word_to_document_freqs.end())
+        {
+            word_to_document_freqs[words] = document_id;
+        }
+        else if (document_id > word_to_document_freqs[words])
+        {
+            word_to_document_freqs[words] = document_id;
+            documents_to_delete.insert(document_id);
+        }
+
     }
 
-    for (const auto id : vec_duplicate_ids) {
-        std::cout << "Found duplicate document id "s
-                  << id << std::endl;
-        search_server.RemoveDocument(id);
+    for (auto document : documents_to_delete)
+    {
+        std::cout << "Found duplicate document id " << document << std::endl;
+        search_server.RemoveDocument(document);
     }
-
 }
