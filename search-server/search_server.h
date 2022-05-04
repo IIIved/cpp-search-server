@@ -76,7 +76,7 @@ private:
          word_to_document_freqs_;
     std:: map<std::string, double>
          word_document_;
-    std::map<std::string, std::map<int, double>>
+    std::map<std::map<int, double>, std::string>
          word_to_ids_;
     std::map<int, DocumentData> documents_;
     std::set<int> document_ids_;
