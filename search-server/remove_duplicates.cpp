@@ -1,41 +1,28 @@
-
 #include "remove_duplicates.h"
 
-bool MapComparition(std::map<std::string, double> Map_1, std::map<std::string, double> Map_2){
-    bool result = false;
-    int temp = 0;
-    for (const auto [word, freq] : Map_1){
-        if (Map_2.count(word)){
-            temp++;
-        }
-    }
-    if (temp == Map_2.size()){
-        result = true;
-    }
-    return result;
-}
+using namespace std;
 
-void RemoveDuplicates(SearchServer& search_server){
-    std::map<std::string, double> temp_result_1, temp_result_2;
-    std::set<int> id_to_delete;
-    auto it_begin = search_server.begin();
+void RemoveDuplicates(SearchServer& search_server) {
+
+    std::vector<int> vec_duplicate_ids;
     auto it_end = search_server.end();
-
-    for (;it_begin != it_end; it_begin++) {
-        temp_result_1 = search_server.GetWordFrequencies(*it_begin);
-        auto it_plus = it_begin;
-        for (; it_plus != it_end; it_plus++){
-            temp_result_2 = search_server.GetWordFrequencies(*it_plus);
-            if (it_plus != it_begin && it_plus != it_end && temp_result_1.size() == temp_result_2.size()){
-                if (MapComparition(temp_result_1, temp_result_2)){
-                    id_to_delete.insert(*it_plus);
+    for (auto it1 = search_server.begin(); it1 != it_end; ++it1) {
+        auto it2_begin = it1;
+        ++it2_begin;
+        if (it2_begin != it_end) {
+            for (auto it2 = it2_begin; it2 != it_end; ++it2) {
+                if (search_server.CompareDocumentsWords(*it1, *it2)) {
+                    vec_duplicate_ids.push_back(*it2);
+                    break;
                 }
             }
         }
-        //it_begin = it_temp;
     }
-    for (const int x : id_to_delete){
-        std::cout<< "Found duplicate document id"s << " "s << x << std::endl;
-        search_server.RemoveDocument(x);
+
+    for (const auto id : vec_duplicate_ids) {
+        std::cout << "Found duplicate document id "s
+                  << id << std::endl;
+        search_server.RemoveDocument(id);
     }
+
 }

@@ -10,7 +10,6 @@ std::string ReadLine();
 
 int ReadLineWithNumber();
 
-
 template <typename StringContainer>
 std::set<std::string> MakeUniqueNonEmptyStrings(const StringContainer& strings) {
     std::set<std::string> non_empty_strings;
