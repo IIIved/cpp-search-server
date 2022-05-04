@@ -74,9 +74,9 @@ private:
     const std::set<std::string> stop_words_;
     std::map<std::string, std::map<int, double>>
          word_to_document_freqs_;
-    std:: map<std::string, double>
+    std::map<std::map<std::string, double>,int>
          word_document_;
-    std::map<std::map<int, double>, std::string>
+    std::map<int, std::map<std::string, double>>
          word_to_ids_;
     std::map<int, DocumentData> documents_;
     std::set<int> document_ids_;
