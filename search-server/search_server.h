@@ -46,8 +46,6 @@ public:
     const std::map<std::string, double>&
           GetWordFrequencies(int document_id) const;
 
-    bool CompareDocumentsWords(int id1, int id2) const;
-
     void RemoveDocument(int document_id);
 
     std::tuple<std::vector<std::string>, DocumentStatus>
@@ -74,8 +72,6 @@ private:
     const std::set<std::string> stop_words_;
     std::map<std::string, std::map<int, double>>
          word_to_document_freqs_;
-    std::map<std::map<std::string, double>,int>
-         word_document_;
     std::map<int, std::map<std::string, double>>
          word_to_ids_;
     std::map<int, DocumentData> documents_;

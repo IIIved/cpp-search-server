@@ -3,7 +3,6 @@
 using namespace std;
 
 // class SearchServer public:
-
 SearchServer::SearchServer(const std::string& stop_words_text)
     : SearchServer(SplitIntoWords(stop_words_text))
     // Invoke delegating constructor
@@ -22,10 +21,12 @@ void SearchServer::AddDocument(int document_id,
     const auto words = SplitIntoWordsNoStop(document);
 
     const double inv_word_count = 1.0 / words.size();
-
+    
+   
     for (const std::string& word : words) {
         word_to_document_freqs_[word][document_id]
             += inv_word_count;
+       word_to_ids_[document_id][word] += inv_word_count;
     }
 
     documents_.emplace(document_id,
@@ -68,28 +69,10 @@ std::set<int>::const_iterator SearchServer::end() const {
 const std::map<std::string, double>&
 SearchServer::GetWordFrequencies(int document_id) const {
     static std::map<std::string, double> result;
-    for (const auto& [word_document_, word_to_ids_] : word_to_document_freqs_) {
-        auto it = word_to_ids_.find(document_id);
-        if (it != word_to_ids_.end()) {
-            result[word_document_] = it -> second;
-        }
-    }
+    if(document_ids_.count(document_id) == 0){
     return result;
-}
-
-bool SearchServer::CompareDocumentsWords(int id, int id_) const {
-        std::vector<std::string> vec_one, vec_two;
-    for (const auto& [key, value] : word_to_document_freqs_) {
-        auto it_one = value.find(id);
-        auto it_two = value.find(id_);
-        if (it_one != value.end()) {
-            vec_one.push_back(key);
-        }
-        if (it_two != value.end()) {
-            vec_two.push_back(key);
-        }
     }
-    return (vec_one == vec_two);
+    return word_to_ids_.at(document_id);
 }
 
 void SearchServer::RemoveDocument(int document_id) {
@@ -109,9 +92,12 @@ void SearchServer::RemoveDocument(int document_id) {
 
     auto it = find(document_ids_.begin(),
                    document_ids_.end(), document_id);
+    
     if (it != document_ids_.end()) {
         document_ids_.erase(it);
+        word_to_ids_.clear();
     }
+    
 }
 
 std::tuple<std::vector<std::string>, DocumentStatus>
