@@ -39,15 +39,9 @@ public:
     GetWordFrequencies(int document_id) const;
 
 // RemoveDocument
-    template <typename ExecutionPolicy>
+     template <typename ExecutionPolicy>
     void RemoveDocument(ExecutionPolicy policy, int document_id);
     void RemoveDocument(int document_id);
-
-    void RemoveDocument(const std::execution::sequenced_policy& policy,
-                        int document_id);
-
-    void RemoveDocument(const std::execution::parallel_policy& policy,
-                        int document_id);
 
 // FindTopDocuments
     template <typename Predicate>
@@ -82,17 +76,7 @@ public:
 // MatchDocument
     template <typename ExecutionPolicy>
     std::tuple<std::vector<std::string_view>, DocumentStatus> MatchDocument(ExecutionPolicy policy, std::string_view raw_query, int document_id) const;
-    
-    std::tuple<std::vector<std::string_view>, DocumentStatus>
-    MatchDocument(const std::string_view raw_query, int document_id) const;
-
-    std::tuple<std::vector<std::string_view>, DocumentStatus>
-    MatchDocument(const std::execution::sequenced_policy& policy,
-                  const std::string_view raw_query, int document_id) const;
-
-    std::tuple<std::vector<std::string_view>, DocumentStatus>
-    MatchDocument(const std::execution::parallel_policy& policy,
-                  const std::string_view raw_query, int document_id) const;
+    std::tuple<std::vector<std::string_view>, DocumentStatus> MatchDocument(std::string_view raw_query, int document_id) const;
 
 private:
     struct DocumentData {
