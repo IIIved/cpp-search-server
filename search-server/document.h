@@ -21,10 +21,10 @@ enum class DocumentStatus {
 };
 
 std::ostream& operator<<(std::ostream& out,
-    const Document& document);
+                         const Document& document);
 
 void PrintDocument(const Document& document);
 
 void PrintMatchDocumentResult(int document_id,
-    const std::vector<std::string>& words,
-    DocumentStatus status);
+     const std::vector<std::string>& words,
+     DocumentStatus status);

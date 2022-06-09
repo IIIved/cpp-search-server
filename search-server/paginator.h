@@ -1,16 +1,13 @@
 #pragma once
 
-#include <iostream>
 #include <vector>
-#include <cassert>
 
 template <typename Iterator>
 class IteratorRange {
 public:
     IteratorRange(Iterator begin, Iterator end)
-        : first_(begin)
-        , last_(end)
-        , size_(distance(first_, last_))
+        : first_(begin), last_(end),
+          size_(distance(first_, last_))
     {}
 
     Iterator begin() const {

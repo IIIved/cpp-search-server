@@ -1,15 +1,13 @@
 #include "document.h"
 
-using namespace std;
+using namespace std::string_literals;
 
 Document::Document(int id, double relevance, int rating)
-          : id(id)
-          , relevance(relevance)
-          , rating(rating)
+    : id(id), relevance(relevance), rating(rating)
 {}
 
 std::ostream& operator<<(std::ostream& out,
-    const Document& document) {
+                         const Document& document) {
     out << "{ "s
         << "document_id = "s << document.id << ", "s
         << "relevance = "s << document.relevance << ", "s
@@ -27,8 +25,8 @@ void PrintDocument(const Document& document) {
 }
 
 void PrintMatchDocumentResult(int document_id,
-    const std::vector<std::string>& words,
-    DocumentStatus status) {
+     const std::vector<std::string>& words,
+     DocumentStatus status) {
     std::cout << "{ "
         << "document_id = " << document_id << ", "
         << "status = " << static_cast<int>(status) << ", "
